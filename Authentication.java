@@ -6,14 +6,17 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.AuthResult;
@@ -21,7 +24,7 @@ import com.google.firebase.auth.FirebaseAuth;
 
 public class Authentication extends AppCompatActivity {
 
-    private FirebaseAuth mAuth;
+    private FirebaseConfiguration firebaseConfig;
    // private Button button;
     private  TextInputLayout iLEmail;
     private TextInputLayout iLPassword;
@@ -34,20 +37,21 @@ public class Authentication extends AppCompatActivity {
 
         iLEmail = (TextInputLayout) findViewById(R.id.tIEmail);
         iLPassword = (TextInputLayout) findViewById(R.id.tIPassword);
+        firebaseConfig = new FirebaseConfiguration();
        // button = (Button) findViewById(R.id.btnLogIn);
 
-        mAuth = FirebaseAuth.getInstance();
 
-        iLPassword.getEditText().setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
-                if (id == R.integer.login || id == EditorInfo.IME_NULL) {
-                    attemptLogin();
-                    return true;
-                }
-                return false;
-            }
-        });
+
+//        iLPassword.getEditText().setOnEditorActionListener(new TextView.OnEditorActionListener() {
+//            @Override
+//            public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
+//                if (id == R.integer.login || id == EditorInfo.IME_NULL) {
+//                    attemptLogin();
+//                    return true;
+//                }
+//                return false;
+//            }
+//        });
 
 
     }
@@ -60,23 +64,32 @@ public class Authentication extends AppCompatActivity {
         String email = iLEmail.getEditText().getText().toString();
         String password = iLPassword.getEditText().getText().toString();
 
-        if(email.isEmpty())    return;
-        if(email.equals("") || password.equals("")) return;
+        if(firebaseConfig.authentification(email, password)){
+            Intent intent = new Intent(Authentication.this, MainActivity.class);
+            finish();
+            startActivity(intent);
+        }
 
-        mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-                if (task.isSuccessful()){
-                    Log.d("Fit", "Authorized :" + task.isSuccessful());
-                    Intent intent = new Intent(Authentication.this, MainActivity.class);
-                    finish();
-                    startActivity(intent);
-                }
-                if (!task.isSuccessful()){
-                    Log.d("Fit", "ERROR authorization :" + task.getException() );
-                }
-            }
-        });
+           // Toast.makeText(getApplicationContext(), "E-mail or password is wrong ", Toast.LENGTH_LONG).show();
+
 
     }
+
+    public  void registerNewUser(View view){
+        String email = iLEmail.getEditText().getText().toString();
+        String password = iLPassword.getEditText().getText().toString();
+
+        if(firebaseConfig.registration(email, password)){
+            Intent intent = new Intent(Authentication.this, MainActivity.class);
+            finish();
+            startActivity(intent);
+        }else{
+            Toast.makeText(getApplicationContext(), "Registration failed ", Toast.LENGTH_LONG).show();
+        }
+
+
+    }
+
+
+
 }
