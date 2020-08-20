@@ -3,6 +3,8 @@ package com.project.khopt.fitassistant;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -10,6 +12,7 @@ import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,13 +24,16 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class Authentication extends AppCompatActivity {
 
-    private FirebaseConfiguration firebaseConfig;
-   // private Button button;
+    private Button button;
     private  TextInputLayout iLEmail;
     private TextInputLayout iLPassword;
+
+    private FirebaseAuth mAuth;
+    private FirebaseUser mUser;
 
 
     @Override
@@ -37,8 +43,9 @@ public class Authentication extends AppCompatActivity {
 
         iLEmail = (TextInputLayout) findViewById(R.id.tIEmail);
         iLPassword = (TextInputLayout) findViewById(R.id.tIPassword);
-        firebaseConfig = new FirebaseConfiguration();
-       // button = (Button) findViewById(R.id.btnLogIn);
+
+        mAuth = FirebaseAuth.getInstance();
+        button = (Button) findViewById(R.id.btnLogIn);
 
 
 
@@ -54,42 +61,91 @@ public class Authentication extends AppCompatActivity {
 //        });
 
 
+        iLPassword.getEditText().setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
+                if ( id == EditorInfo.IME_ACTION_DONE || keyEvent.getAction() == KeyEvent.KEYCODE_ENTER) {
+
+                    hidingKeyBoard(iLPassword);
+                    iLPassword.clearFocus();
+
+                    return true;
+                }
+                return false;
+            }
+        });
+
+
     }
+
+
+    private  void hidingKeyBoard(View view){
+        view = this.getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
+    }
+
 
     public void signInExistingUser(View view) {
-        attemptLogin();
-    }
-
-    public void attemptLogin() {
         String email = iLEmail.getEditText().getText().toString();
         String password = iLPassword.getEditText().getText().toString();
 
-        if(firebaseConfig.authentification(email, password)){
-            Intent intent = new Intent(Authentication.this, MainActivity.class);
-            finish();
-            startActivity(intent);
-        }
+        if(email.isEmpty())    return;
+        if(email.equals("") || password.equals("")) return;
+        mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener( this, new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if (task.isSuccessful()){
+                    mUser = mAuth.getCurrentUser();
+                    Intent intent = new Intent(Authentication.this, MainActivity.class);
+                    finish();
+                    startActivity(intent);
+                    Log.d("Fit", "Authorized :" + task.isSuccessful() + mUser.toString());
 
-           // Toast.makeText(getApplicationContext(), "E-mail or password is wrong ", Toast.LENGTH_LONG).show();
+                }else {
+                    Toast.makeText(getApplicationContext(), "E-mail or password is wrong ", Toast.LENGTH_LONG).show();
+                    Log.d("Fit", "ERROR authorization :" + task.getException() );
+                }
 
+            }
+
+        });
 
     }
+
 
     public  void registerNewUser(View view){
         String email = iLEmail.getEditText().getText().toString();
         String password = iLPassword.getEditText().getText().toString();
+        if(email.isEmpty())    return;
+        if(email.equals("") || password.equals("")) return;
 
-        if(firebaseConfig.registration(email, password)){
-            Intent intent = new Intent(Authentication.this, MainActivity.class);
-            finish();
-            startActivity(intent);
-        }else{
-            Toast.makeText(getApplicationContext(), "Registration failed ", Toast.LENGTH_LONG).show();
-        }
+        mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if(task.isSuccessful()){
+                    mUser = mAuth.getCurrentUser();
+                    Log.d("Fit", "New user registered: " + mUser.getEmail() + task.isSuccessful());
+                    Intent intent = new Intent(Authentication.this, MainActivity.class);
+                    finish();
+                    startActivity(intent);
 
+                }
+                if (!task.isSuccessful()){
+                    Toast.makeText(getApplicationContext(), "E-mail is wrong ", Toast.LENGTH_LONG).show();
+                    Log.d("Fit", "ERROR registration :" + task.getException() );
+                }
+            }
+        });
 
     }
 
 
-
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mAuth.signOut();
+    }
 }
