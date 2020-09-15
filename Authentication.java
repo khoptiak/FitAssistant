@@ -1,14 +1,9 @@
 package com.project.khopt.fitassistant;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -19,12 +14,13 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.tabs.TabLayout;
-import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 public class Authentication extends AppCompatActivity {
 
@@ -35,6 +31,18 @@ public class Authentication extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private FirebaseUser mUser;
 
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        // mUser = mAuth.getCurrentUser();
+        if(mUser!= null){
+            Intent intent = new Intent(Authentication.this, MainActivity.class);
+            finish();
+            startActivity(intent);
+            Log.d("Fit", "User authorized " );
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -143,9 +151,5 @@ public class Authentication extends AppCompatActivity {
     }
 
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        mAuth.signOut();
-    }
+
 }

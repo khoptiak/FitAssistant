@@ -6,10 +6,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
-import android.widget.MediaController;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.VideoView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,22 +41,22 @@ public class TabFragment  extends Fragment {
         return view;
     }
 
-    private List<SportElemente> temporaryDataList(){
-        List<SportElemente> temporaryList = new ArrayList<>();
+    private List<SportElement> temporaryDataList(){
+        List<SportElement> temporaryList = new ArrayList<>();
         String first= "<iframe width=\"100%\" height=\"100%\" src=\"https://www.youtube.com/embed/";
         String second = "\" frameborder=\"0\" allowfullscreen></iframe>";
-        temporaryList.add(new SportElemente(first  + "ex16_HWvYJM"+ second, "Lose Weight and Lose Belly Fat"));
-        temporaryList.add(new SportElemente(first  + "oCOzFpxMRuM"+ second, "Upper Body Workout "));
-        temporaryList.add(new SportElemente(first  + "oCOzFpxMRuM"+ second, "Upper Body Workout "));
+        temporaryList.add(new SportElement(first  + "ex16_HWvYJM"+ second, "Lose Weight and Lose Belly Fat"));
+        temporaryList.add(new SportElement(first  + "oCOzFpxMRuM"+ second, "Upper Body Workout "));
+        temporaryList.add(new SportElement(first  + "oCOzFpxMRuM"+ second, "Upper Body Workout "));
 
         return temporaryList;
     }
 
     public class SportListAdapter extends  RecyclerView.Adapter<SportListAdapter.ViewHolder>{
 
-        private List<SportElemente> exerciseList;
+        private List<SportElement> exerciseList;
 
-        public SportListAdapter(List<SportElemente> data){
+        public SportListAdapter(List<SportElement> data){
             exerciseList = data;
         }
 

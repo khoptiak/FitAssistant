@@ -1,11 +1,15 @@
 package com.project.khopt.fitassistant;
 
-public class SportElemente {
+public class SportElement {
 
     private String url;
     private String name;
 
-    public SportElemente(String url, String name) {
+    public  SportElement(){
+
+    }
+
+    public SportElement(String url, String name) {
         this.url = url;
         this.name = name;
     }
