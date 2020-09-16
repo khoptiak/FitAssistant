@@ -1,6 +1,7 @@
 # FitAssistant
 
 OS - Android
+Language - Java
 Server part- Firebase
 Prototype -https://www.figma.com/file/k1R6Pv5qyvHOpK5tn5jkrJ/Figma-Basics?node-id=8%3A442
 
