@@ -41,13 +41,8 @@ public class SportTabFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.sport_fragment, container, false);
-        mRecyclerView = view.findViewById(R.id.sportfragment_recycleview);
-        mLinearLayoutManager = new LinearLayoutManager(getActivity());
-        mLinearLayoutManager.setOrientation(RecyclerView.VERTICAL);
-        mRecyclerView.setHasFixedSize(true);
-        mRecyclerView.setLayoutManager(mLinearLayoutManager);
-
+        View view = inflater.inflate(R.layout.fragment_recycleview, container, false);
+        mRecyclerView = view.findViewById(R.id.fragment_recycleview);
 
         mFirebaseFirestore = FirebaseFirestore.getInstance();
         sportElementList = new ArrayList<>();
@@ -60,20 +55,34 @@ public class SportTabFragment extends Fragment {
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 SportElement sportElement = document.toObject(SportElement.class);
                                 sportElementList.add(sportElement);
-                                Log.d("TAG", document.getId() + " => " + document.getData());
+                                Log.d("Fit", document.getId() + " => " + document.getData());
+                                if (sportElementList.size() == task.getResult().size()){
+                                    Log.d("Fit", "sport list INSIDE" + " => " + sportElementList.toString());
+                                    mLinearLayoutManager = new LinearLayoutManager(getActivity());
+                                    mLinearLayoutManager.setOrientation(RecyclerView.VERTICAL);
+                                    mRecyclerView.setHasFixedSize(true);
+                                    mRecyclerView.setLayoutManager(mLinearLayoutManager);
+                                    mSportListAdapter = new SportListAdapter(sportElementList);
+                                    mRecyclerView.setAdapter(mSportListAdapter);
+                                }
                             }
-                            mSportListAdapter = new SportListAdapter(sportElementList);
+
                         } else {
-                            Log.d("TAG", "Error getting documents: ", task.getException());
+                            Log.d("Fit", "Error getting documents: ", task.getException());
                         }
                     }
                 });
 
 
-        mRecyclerView.setAdapter(mSportListAdapter);
-
         return view;
 
+    }
+
+    public ArrayList<SportElement> temporaryList(){
+        ArrayList<SportElement> list = new ArrayList<>();
+        list.add(new SportElement( "https://firebasestorage.googleapis.com/v0/b/fitassistant-de8b3.appspot.com/o/video%2Ffullbody1.mp4?alt=media&token=de43eb4b-9513-4945-b0cc-0b8f7f355382", "Full Body Workout"));
+        list.add(new SportElement("https://firebasestorage.googleapis.com/v0/b/fitassistant-de8b3.appspot.com/o/video%2Ffullbody1.mp4?alt=media&token=de43eb4b-9513-4945-b0cc-0b8f7f355382", "Lower Body Workout"));
+        return list;
     }
 
 
@@ -83,6 +92,7 @@ public class SportTabFragment extends Fragment {
 
         public SportListAdapter(List<SportElement> data){
             exerciseList = data;
+            Log.d("Fit", "data inside adapter  => " + exerciseList.toString());
         }
 
 
@@ -91,7 +101,7 @@ public class SportTabFragment extends Fragment {
         @Override
         public SportViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
-            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.sport_item, parent, false);
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_sport, parent, false);
             SportViewHolder viewHolder = new SportViewHolder(view);
             return viewHolder;
         }

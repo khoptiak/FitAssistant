@@ -29,7 +29,7 @@ public class TabFragment  extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.tab_fragment, container, false);
+        View view = inflater.inflate(R.layout.fragment_tab, container, false);
         mRecyclerView = view.findViewById(R.id.fragment_recycleview);
         mLinearLayoutManager = new LinearLayoutManager(getActivity());
         mLinearLayoutManager.setOrientation(RecyclerView.VERTICAL);
@@ -90,7 +90,6 @@ public class TabFragment  extends Fragment {
         @Override
         public void onBindViewHolder(@NonNull final SportListAdapter.ViewHolder holder, final int position) {
 
-            holder.mWebVideoView.loadData( exerciseList.get(position).getUrl(), "text/html" , "utf-8");
                   //  holder.mWebVideoView.setVideoPath(exerciseList.get(position).getUrl());
             holder.mTextViewVideoName.setText(exerciseList.get(position).getName());
 

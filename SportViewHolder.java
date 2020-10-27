@@ -2,6 +2,7 @@ package com.project.khopt.fitassistant;
 
 import android.content.Context;
 import android.net.Uri;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -42,6 +43,7 @@ public class SportViewHolder extends RecyclerView.ViewHolder {
         mPlayerView.setPlayer(mSimpleExoPlayer);
 
         Uri uri  = Uri.parse(sportElement.getUrl());
+        Log.d("Fit","sport element uri: " + uri.toString());
         MediaSource mediaSource = buildMediaSource(context, uri);
         mSimpleExoPlayer.setPlayWhenReady(playWhenReady);
         mSimpleExoPlayer.seekTo(currentWindow, playbackPosition);

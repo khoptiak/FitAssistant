@@ -24,9 +24,27 @@ public class TabAdapter extends FragmentStatePagerAdapter {
         return mFragmentList.get(position);
     }
 
+    @Override
+    public int getItemPosition(@NonNull Object object) {
+        Fragment fragment = (Fragment) object;
+        int position = mFragmentList.indexOf(fragment);
+        if (position>=0) {
+            return position;
+        }
+        else {
+            return POSITION_NONE;
+        }
+    }
+
     public void addFragment(Fragment fragment, String title){
         mFragmentList.add(fragment);
         mFragmentTitleList.add(title);
+
+    }
+    public void cleanTabLayout(){
+        mFragmentList.clear();
+        mFragmentTitleList.clear();
+       // mFragmentTitleList.add(title);
 
     }
 
