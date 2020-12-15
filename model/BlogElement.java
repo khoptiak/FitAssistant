@@ -1,10 +1,14 @@
-package com.project.khopt.fitassistant;
+package com.project.khopt.fitassistant.model;
 
 public class BlogElement {
 
     private String iconUrl;
     private String title;
     private String content;
+
+
+
+    public BlogElement(){}
 
     public BlogElement(String iconUrl, String title, String content) {
         this.iconUrl = iconUrl;

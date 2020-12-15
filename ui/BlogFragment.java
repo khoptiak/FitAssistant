@@ -1,4 +1,4 @@
-package com.project.khopt.fitassistant;
+package com.project.khopt.fitassistant.ui;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -6,11 +6,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import com.project.khopt.fitassistant.R;
+import com.project.khopt.fitassistant.model.BlogElement;
+import com.project.khopt.fitassistant.util.FragmentsContract;
+import com.project.khopt.fitassistant.util.FragmentsPresenter;
 import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import androidx.annotation.NonNull;
@@ -21,38 +23,41 @@ import androidx.recyclerview.widget.RecyclerView;
 
 
 
-public class BlogFragment extends Fragment {
+public class BlogFragment extends Fragment implements FragmentsContract.View{
 
     private RecyclerView mRecyclerView;
     private LinearLayoutManager mLayoutManager;
+    private FragmentsContract.Presenter mPresenter;
+
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+
         View view = inflater.inflate(R.layout.fragment_recycleview, container, false);
         mRecyclerView = view.findViewById(R.id.fragment_recycleview);
         mRecyclerView.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(getContext());
         mLayoutManager.setOrientation(RecyclerView.VERTICAL);
         mRecyclerView.setLayoutManager(mLayoutManager);
-        BlogFragmentAdapter adapter = new BlogFragmentAdapter(temporaryData());
-        mRecyclerView.setAdapter(adapter);
+
+
+        mPresenter = new FragmentsPresenter(this);
+        mPresenter.getDataFromModel();
         return view;
     }
 
-    public List<BlogElement> temporaryData(){
-        ArrayList<BlogElement> data = new ArrayList<>();
-        data.add(new BlogElement( "https://firebasestorage.googleapis.com/v0/b/fitassistant-de8b3.appspot.com/o/images%2FIMG_20191027_221750.jpg?alt=media&token=544be514-e68a-4c0f-a7dc-8826bf753af8"
-                ,"5 Common Mineral Deficiencies ", "Minerals are chemical compounds or molecules found in nature. Though often mentioned alongside them, minerals are different than vitamins. " +
-                "They are inorganic substances that not only play an important role in the earth’s ecosystem but also in the overall health of all living  organisms, including plants, animals, and humans. \n " +
-                "Minerals are classified as major if greater than 5 grams of it are present in the human body. If there are less than 5 grams present, the mineral is considered a trace mineral...."));
+    @Override
+    public void setDataToFragment(List<Object> data) {
 
-        data.add(new BlogElement( "https://firebasestorage.googleapis.com/v0/b/fitassistant-de8b3.appspot.com/o/images%2FIMG_20191027_221750.jpg?alt=media&token=544be514-e68a-4c0f-a7dc-8826bf753af8"
-                ,"5 Common Mineral Deficiencies ", "Minerals are chemical compounds or molecules found in nature. Though often mentioned alongside them, minerals are different than vitamins. " +
-                "They are inorganic substances that not only play an important role in the earth’s ecosystem but also in the overall health of all living organisms, including plants, animals, and humans. \n" +
-                "Minerals are classified as major if greater than 5 grams of it are present in the human body. If there are less than 5 grams present, the mineral is considered a trace mineral...."));
+        BlogFragmentAdapter adapter = new BlogFragmentAdapter(data);
+        mRecyclerView.setAdapter(adapter);
+    }
 
-        return  data;
+    @Override
+    public String getViewInfo() {
+        String id = Integer.toString(getView().getId());
+        return id;
     }
 
 
@@ -60,9 +65,9 @@ public class BlogFragment extends Fragment {
 
         private final int MAX_TEXT_LENGTH = 150;
 
-        private List<BlogElement> dataList;
+        private List<Object> dataList;
 
-        public BlogFragmentAdapter(List<BlogElement> dataList) {
+        public BlogFragmentAdapter(List<Object> dataList) {
             this.dataList = dataList;
         }
 
@@ -76,14 +81,15 @@ public class BlogFragment extends Fragment {
 
         @Override
         public void onBindViewHolder(@NonNull BlogViewHolder holder, int position) {
-            Picasso.get().load(dataList.get(position).getIconUrl()).into(holder.mImageView);
-            holder.mTitleView.setText(checkText(dataList.get(position).getTitle()));
-            holder.mContentTextView.setText(dataList.get(position).getContent());
 
+            BlogElement blogElement = (BlogElement)  dataList.get(position);
+            Picasso.get().load( blogElement.getIconUrl()).into(holder.mImageView);
+            holder.mTitleView.setText(checkText(blogElement.getTitle()));
+            holder.mContentTextView.setText(blogElement.getContent());
             holder.mImageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Toast.makeText(getContext(), "Item "+ position + "has been clicked", Toast.LENGTH_LONG).show();
+                    //    Toast.makeText(getContext(), "Item "+ position + "has been clicked", Toast.LENGTH_LONG).show();
                 }
             });
         }
@@ -114,8 +120,8 @@ public class BlogFragment extends Fragment {
 
             }
             if (text.length()> MAX_TEXT_LENGTH){
-                 text = text.substring(0,MAX_TEXT_LENGTH);
-                 text.concat("...");
+                text = text.substring(0,MAX_TEXT_LENGTH);
+                text.concat("...");
             }
             return text;
         }

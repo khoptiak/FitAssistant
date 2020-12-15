@@ -1,10 +1,11 @@
-package com.project.khopt.fitassistant;
+package com.project.khopt.fitassistant.ui;
 
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.google.android.material.navigation.NavigationView;
+import com.project.khopt.fitassistant.R;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -15,7 +16,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-public class MainActivity2 extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity {
 
     private DrawerLayout mDrawerLayout;
     private NavigationView mNavigationView;
@@ -42,10 +43,10 @@ public class MainActivity2 extends AppCompatActivity {
         setupNavigationMenu(mNavigationView);
 
         mFragmentManager = getSupportFragmentManager();
-        mInitialFragment = new SportTabFragment();
-        FragmentTransaction mFragmentTransaction  = mFragmentManager.beginTransaction();
-        mFragmentTransaction.add(R.id.fragment_container, mInitialFragment);
-        mFragmentTransaction.commit();
+//        mInitialFragment = new ExerciseFragment();
+//        FragmentTransaction mFragmentTransaction  = mFragmentManager.beginTransaction();
+//        mFragmentTransaction.add(R.id.fragment_container, mInitialFragment);
+//        mFragmentTransaction.commit();
     }
 
     @Override
@@ -81,10 +82,10 @@ public class MainActivity2 extends AppCompatActivity {
                 Toast.makeText(this, "Blog", Toast.LENGTH_LONG).show();
                 break;
             case R.id.nutrition_item:
-                fragment = new EatFragment();
+                fragment = new NutritionFragment();
                 break;
             case R.id.exercises_item:
-                fragment = new SportTabFragment();
+                fragment = new ExerciseFragment();
                 break;
 
         }

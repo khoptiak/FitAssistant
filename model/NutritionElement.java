@@ -1,11 +1,11 @@
-package com.project.khopt.fitassistant;
+package com.project.khopt.fitassistant.model;
 
-public class FoodElement {
-
+public class NutritionElement {
     private String title;
     private String iconUrl;
 
-    public FoodElement(String title, String iconUrl) {
+    public NutritionElement(){}
+    public NutritionElement(String title, String iconUrl) {
         this.title = title;
         this.iconUrl = iconUrl;
     }
